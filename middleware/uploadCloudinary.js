@@ -11,6 +11,7 @@ cloudinary.config({
 }); // untuk mengambil data dari .env file untuk mengambil data dari cloudinary
 
 const storage = new CloudinaryStorage({
+
   cloudinary: cloudinary,
   params: {
     folder: "/profile",

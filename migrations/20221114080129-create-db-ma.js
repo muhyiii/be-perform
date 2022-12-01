@@ -33,7 +33,7 @@ module.exports = {
         type: Sequelize.STRING,
       },
       status: {
-        type: Sequelize.ENUM("to-do", "ongoing", "held", "done"),
+        type: Sequelize.ENUM("to-do", "ongoing", "hold", "done"),
       },
       task: {
         type: Sequelize.STRING,

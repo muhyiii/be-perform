@@ -10,11 +10,22 @@ const {
   getGoalsByUserNow,
 } = require("../controller/goalsController");
 const {
+  getAllMA,
+  addMA,
+  getMaByGoalId,
+  getMaByUserNow,
+  deleteMa,
+  editStatusMaByUser,
+  getMAbyId,
+} = require("../controller/maController");
+const {
   registerUser,
   getAllUsers,
   loginUser,
   getUserById,
   registerUserBiodata,
+
+  usersStaticAll,
 } = require("../controller/userContoroller");
 const { upload } = require("../middleware/uploadCloudinary");
 const validationMiddleware = require("../middleware/ValidationMiddleware");
@@ -39,13 +50,15 @@ router.post(
 //// COUNTINUE REGISTER
 router.post(
   "/register-account/continue/:idUser",
-  upload.single("image"),
+  upload.single("image", { width: 300 }),
   registerUserBiodata
 );
 //// LOGIN USER
 router.post("/login-account", loginUser);
 // GET ALL DATA USERS
 router.get("/data/users", getAllUsers);
+// GET ALL STATIC USER
+router.get("/data/users/staticAll", usersStaticAll);
 // GET ONE DATA USER
 router.get("/data/users/:id", getUserById);
 
@@ -66,5 +79,21 @@ router.delete("/data/goals/:goalId/delete", deleteGoal);
 router.post("/data/goals/multiple/delete", deleteMultiGoals);
 // UPDATE MULTI GOALS
 router.post("/data/goals/multiple/update", updateMultiGoals);
+
+// MEASURED ACTIVITY
+//// GET ALL MEASURED DATA
+router.get("/data/measured-activities", getAllMA);
+//// ADD MEASURED ACTIVITY
+router.post("/add-measured-activity", addMA);
+// GET MEASURED ACTIVITY BY USER NOW
+router.get("/data/measured-activities/user/:userId", getMaByUserNow);
+// GET MEASURED ACTIVITY BY GOAL ID
+router.get("/data/measured-activities/goal/:goalId", getMaByGoalId);
+// GET MEASURED ACTIVITY BY  ID
+router.get("/data/measured-activities/:maId", getMAbyId);
+// UPDATE STATUS BY USER
+router.delete("/data/measured-activities/:maId/delete", deleteMa);
+// UPDATE STATUS BY USER
+router.put("/data/measured-activities/:maId/update", editStatusMaByUser);
 
 module.exports = router;

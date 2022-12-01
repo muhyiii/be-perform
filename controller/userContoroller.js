@@ -6,7 +6,8 @@ dotenv.config();
 
 //// IMPORT MODELS
 const UserModel = require("../models").dbUsers;
-
+const MAModel = require("../models").dbMa;
+const GoalModel = require("../models").dbGoals;
 /// FUNCTIONS
 
 /// REGISTER USER
@@ -147,7 +148,7 @@ const loginUser = async (req, res) => {
 /// GET USERS
 const getAllUsers = async (req, res) => {
   try {
-    const dataUser = await UserModel.findAll({
+    const dataUser = await UserModel.findAndCountAll({
       attributes: [
         "id",
         "username",
@@ -157,7 +158,7 @@ const getAllUsers = async (req, res) => {
         "birthday",
         "image",
       ],
-    });
+     });
 
     return res.json({
       status: "Success",
@@ -200,10 +201,51 @@ const getUserById = async (req, res) => {
     });
   }
 };
+
+const usersStaticAll = async (req, res) => {
+  try {
+    const dataUser = await UserModel.findAndCountAll({
+      include: [
+        {
+          model: MAModel,
+          require: true,
+          as: "mas",
+
+          through: {
+            attributes: [],
+          },
+        },
+        {
+          model: GoalModel,
+          require: true,
+          as: "goals",
+
+          through: {
+            attributes: [],
+          },
+        },
+      ],
+    });
+    // return res.send("dad")
+    return res.json({
+      status: "Success",
+      messege: "Succesfully fetching all users data with all static",
+      data: dataUser,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(403).json({
+      status: "Failed",
+      messege: `Something is error at ${error}`,
+    });
+  }
+};
+
 module.exports = {
   registerUser,
   getAllUsers,
   loginUser,
   getUserById,
   registerUserBiodata,
+  usersStaticAll,
 };

@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
       dbGoals.belongsToMany(models.dbMa, {
         through: models.allPivot,
         as: "mas",
-        foreignKey: "idMa",
+        foreignKey: "idGoal",
       });
       dbGoals.belongsTo(models.dbUsers, {
         as: "user",

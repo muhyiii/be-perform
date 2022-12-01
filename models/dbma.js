@@ -11,14 +11,14 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       dbMa.belongsToMany(models.dbUsers, {
+        through: models.allPivot,
         as: "users",
         foreignKey: "idMa",
-        through: models.allPivot,
       });
       dbMa.belongsToMany(models.dbGoals, {
-        as: "goals",
-        foreignKey: "idGoal",
         through: models.allPivot,
+        as: "goals",
+        foreignKey: "idMa",
       });
       dbMa.belongsTo(models.dbUsers, {
         as: "user",
@@ -33,8 +33,9 @@ module.exports = (sequelize, DataTypes) => {
   dbMa.init(
     {
       idUser: DataTypes.INTEGER,
-      goalId: DataTypes.STRING,
-      status: DataTypes.ENUM("to-do", "ongoing", "held", "done"),
+      idGoal: DataTypes.INTEGER,
+      maId: DataTypes.STRING,
+      status: DataTypes.ENUM("to-do", "ongoing", "hold", "done"),
       task: DataTypes.STRING,
       description: DataTypes.STRING,
       rate: DataTypes.INTEGER,
