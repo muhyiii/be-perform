@@ -8,15 +8,12 @@ const AllPivot = require("../models").allPivot;
 const addGoal = async (req, res) => {
   try {
     let body = req.body;
-    // let goalId = ;
-    // return res.send(goalId)
     const goals = await GoalModel.create({
       goalId: uuidv4(),
       idUser: body.userId,
       status: "to-do",
       task: body.task,
       description: body.description,
-
       rate: 0,
       value: 0,
       isArchive: false,
@@ -45,38 +42,29 @@ const addGoal = async (req, res) => {
 /// GET GOALS
 const getAllGoals = async (req, res) => {
   try {
+    const { limit, offset } = req.query;
     const goalData = await GoalModel.findAndCountAll({
-      attributes: [
-        "id",
-        "idUser",
-        "goalId",
-        "status",
-        "task",
-        "description",
-        "value",
-        "image",
-        "rate",
-        "isArchive",
-        "fromDate",
-        "toDate",
-        "createdAt",
-      ],
       include: [
         {
           model: UserModel,
           require: true,
           as: "users",
           attributes: ["name", "role", "image"],
-          through: {
-            attributes: [],
-          },
+          // through: {
+          //   attributes: [],
+          // },
         },
       ],
+      offset: offset,
+      limit: limit,
+      // offset: 5,
+      // limit: 5,
     });
 
     return res.json({
       status: "Success",
       messege: "Succesfully fetching all goals data",
+      lengthData: goalData.length,
       data: goalData,
     });
   } catch (error) {
@@ -93,21 +81,6 @@ const getGoalsByUserNow = async (req, res) => {
   try {
     const { id } = req.params;
     const goalData = await GoalModel.findAndCountAll({
-      attributes: [
-        "id",
-        "idUser",
-        "goalId",
-        "status",
-        "task",
-        "description",
-        "rate",
-        "value",
-        "image",
-        "isArchive",
-        "fromDate",
-        "toDate",
-        "createdAt",
-      ],
       where: { idUser: id },
       include: [
         {
@@ -145,21 +118,7 @@ const getGoalsByUserNow = async (req, res) => {
 const getGoalById = async (req, res) => {
   try {
     const { goalId } = req.params;
-
     const goalData = await GoalModel.findOne({
-      attributes: [
-        "id",
-        "idUser",
-        "goalId",
-        "status",
-        "task",
-        "description",
-        "rate",
-        "value",
-        "image",
-        "fromDate",
-        "toDate",
-      ],
       where: { goalId: goalId },
       include: [
         {
@@ -197,7 +156,7 @@ const getGoalById = async (req, res) => {
 const editStatusByUser = async (req, res) => {
   try {
     const { goalId } = req.params;
-    const { status } = req.body;
+    const { status, isArchive } = req.body;
     const dataGoal = await GoalModel.findOne({ where: { goalId: goalId } });
     if (dataGoal === 0) {
       return res.json({
@@ -205,14 +164,30 @@ const editStatusByUser = async (req, res) => {
         messege: "Data is undefined",
       });
     }
-    await GoalModel.update(
-      { status: status, rate: status === "ongoing" ? 60 : 100 },
-      {
-        where: {
-          goalId: goalId,
+    if (status === null) {
+      await GoalModel.update(
+        {
+          isArchive: isArchive,
         },
-      }
-    );
+        {
+          where: {
+            goalId: goalId,
+          },
+        }
+      );
+    } else {
+      await GoalModel.update(
+        {
+          isArchive: isArchive,
+          rate: status === "ongoing" ? 60 : 100,
+        },
+        {
+          where: {
+            goalId: goalId,
+          },
+        }
+      );
+    }
 
     return res.json({
       status: "Success",
@@ -231,10 +206,7 @@ const editStatusByUser = async (req, res) => {
 const deleteGoal = async (req, res) => {
   try {
     const { goalId } = req.params;
-
-    // return res.send({status,g})
     const dataGoal = await GoalModel.findOne({ where: { goalId: goalId } });
-    // return res.send(dataGoal)
     if (dataGoal === 0) {
       return res.json({
         status: "Failed",
@@ -264,9 +236,7 @@ const deleteGoal = async (req, res) => {
 const deleteMultiGoals = async (req, res) => {
   try {
     const { multiId } = req.body;
-
     let count = 0;
-
     await Promise.all(
       multiId.map(async (data) => {
         const deleteData = await GoalModel.destroy({
@@ -279,7 +249,6 @@ const deleteMultiGoals = async (req, res) => {
         }
       })
     );
-
     return res.json({
       status: "Success",
       messege: `${count} Goals has been deleted`,
@@ -296,27 +265,42 @@ const deleteMultiGoals = async (req, res) => {
 // UPDATE MULTI GOALS
 const updateMultiGoals = async (req, res) => {
   try {
-    const { status, goalId } = req.body;
-    // const status = payload.status;
-    // return res.send(payload)
+    const { status, goalId, isArchive } = req.body;
     let count = 0;
-
     await Promise.all(
       goalId.map(async (data) => {
-        const updateData = await GoalModel.update(
-          { status: status, rate: status === "ongoing" ? 60 : 100 },
-          {
-            where: {
-              goalId: data,
+        if (status === null) {
+          const updateData = await GoalModel.update(
+            {
+              isArchive: isArchive,
             },
+            {
+              where: {
+                goalId: data,
+              },
+            }
+          );
+          if (updateData) {
+            count = count + 1;
           }
-        );
-        if (updateData) {
-          count = count + 1;
+        } else {
+          const updateData = await GoalModel.update(
+            {
+              rate: status === "ongoing" ? 60 : 100,
+              isArchive: isArchive,
+            },
+            {
+              where: {
+                goalId: data,
+              },
+            }
+          );
+          if (updateData) {
+            count = count + 1;
+          }
         }
       })
     );
-
     return res.json({
       status: "Success",
       messege: `${count} Goals has been updated`,

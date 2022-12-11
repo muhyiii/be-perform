@@ -8,10 +8,10 @@ cloudinary.config({
   api_key: process.env.API_KEY,
   api_secret: process.env.SECRET_API_KEY,
   secure: true,
+  
 }); // untuk mengambil data dari .env file untuk mengambil data dari cloudinary
 
 const storage = new CloudinaryStorage({
-
   cloudinary: cloudinary,
   params: {
     folder: "/profile",

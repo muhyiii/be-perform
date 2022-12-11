@@ -17,7 +17,10 @@ const {
   deleteMa,
   editStatusMaByUser,
   getMAbyId,
+  deleteMultiMA,
+  updateMultiMA,
 } = require("../controller/maController");
+const { getPeriods, createPeriod } = require("../controller/periodController");
 const {
   registerUser,
   getAllUsers,
@@ -50,7 +53,7 @@ router.post(
 //// COUNTINUE REGISTER
 router.post(
   "/register-account/continue/:idUser",
-  upload.single("image", { width: 300 }),
+  upload.single("image", { width: 200, height: 200, crop: "fill" }),
   registerUserBiodata
 );
 //// LOGIN USER
@@ -95,5 +98,14 @@ router.get("/data/measured-activities/:maId", getMAbyId);
 router.delete("/data/measured-activities/:maId/delete", deleteMa);
 // UPDATE STATUS BY USER
 router.put("/data/measured-activities/:maId/update", editStatusMaByUser);
+// DELETE MULTI MEASURE ACTIVITY
+router.post("/data/measured-activities/multiple/delete", deleteMultiMA);
+// UPDATE MULTI MEASURE ACTIVITY
+router.post("/data/measured-activities/multiple/update", updateMultiMA);
 
+// PERIOD
+///// GET ALL PERIODS
+router.get("/data/periods", getPeriods);
+///// ADD PERIOD
+router.post("/add-period", createPeriod);
 module.exports = router;

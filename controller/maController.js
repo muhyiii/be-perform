@@ -19,7 +19,6 @@ const addMA = async (req, res) => {
       rate: 0,
       value: 0,
       isArchive: false,
-      //   image: body.image,
       fromDate: body.fromDate,
       toDate: body.toDate,
     });
@@ -45,23 +44,6 @@ const addMA = async (req, res) => {
 const getAllMA = async (req, res) => {
   try {
     const measuredData = await MAModel.findAndCountAll({
-      attributes: [
-        "id",
-        "idUser",
-        "idGoal",
-        "maId",
-        "status",
-        "task",
-        "description",
-        "image",
-        "value",
-        "isArchive",
-        "rate",
-        "fromDate",
-        "toDate",
-        "createdAt",
-        "updatedAt",
-      ],
       include: [
         {
           model: UserModel,
@@ -83,7 +65,6 @@ const getAllMA = async (req, res) => {
         },
       ],
     });
-
     return res.json({
       status: "Success",
       messege: "Succesfully fetching all measured activity data",
@@ -102,25 +83,7 @@ const getAllMA = async (req, res) => {
 const getMAbyId = async (req, res) => {
   try {
     const { maId } = req.params;
-
     const measuredData = await MAModel.findOne({
-      attributes: [
-        "id",
-        "idUser",
-        "idGoal",
-        "maId",
-        "status",
-        "task",
-        "description",
-        "image",
-        "value",
-        "isArchive",
-        "rate",
-        "fromDate",
-        "toDate",
-        "createdAt",
-        "updatedAt",
-      ],
       where: { maId: maId },
       include: [
         {
@@ -166,24 +129,7 @@ const getMAbyId = async (req, res) => {
 const getMaByUserNow = async (req, res) => {
   try {
     const { userId } = req.params;
-
     const measuredData = await MAModel.findAndCountAll({
-      attributes: [
-        "id",
-        "idUser",
-        "idGoal",
-        "maId",
-        "status",
-        "task",
-        "description",
-        "image",
-        "value",
-        "isArchive",
-        "rate",
-        "fromDate",
-        "toDate",
-        "updatedAt",
-      ],
       where: { idUser: userId },
       include: [
         {
@@ -232,22 +178,6 @@ const getMaByGoalId = async (req, res) => {
     const { goalId } = req.params;
 
     const measuredData = await MAModel.findAndCountAll({
-      attributes: [
-        "id",
-        "idUser",
-        "idGoal",
-        "maId",
-        "status",
-        "task",
-        "description",
-        "image",
-        "value",
-        "isArchive",
-        "rate",
-        "fromDate",
-        "toDate",
-        "updatedAt",
-      ],
       where: { idGoal: goalId },
       include: [
         {
@@ -295,28 +225,37 @@ const editStatusMaByUser = async (req, res) => {
   try {
     const { maId } = req.params;
     const { status, isArchive } = req.body;
-    // return res.send({status,g})
     const measuredData = await MAModel.findOne({ where: { maId: maId } });
-    // return res.send(measuredData)
     if (measuredData === 0) {
       return res.json({
         status: "Failed",
         messege: "Data is undefined",
       });
     }
-    await MAModel.update(
-      {
-        status: status,
-        rate: status === "ongoing" ? 60 : 100,
-        isArchive: isArchive,
-      },
-      {
-        where: {
-          maId: maId,
+    if (status === null) {
+      await MAModel.update(
+        {
+          isArchive: isArchive,
         },
-      }
-    );
-
+        {
+          where: {
+            maId: maId,
+          },
+        }
+      );
+    } else {
+      await MAModel.update(
+        {
+          status: status,
+          rate: status === "ongoing" ? 60 : 100,
+        },
+        {
+          where: {
+            maId: maId,
+          },
+        }
+      );
+    }
     return res.json({
       status: "Success",
       messege: "Your status has been updated",
@@ -334,10 +273,7 @@ const editStatusMaByUser = async (req, res) => {
 const deleteMa = async (req, res) => {
   try {
     const { maId } = req.params;
-
-    // return res.send({status,g})
     const measuredData = await MAModel.findOne({ where: { maId: maId } });
-    // return res.send(measuredData)
     if (measuredData === 0) {
       return res.json({
         status: "Failed",
@@ -349,7 +285,6 @@ const deleteMa = async (req, res) => {
         maId: maId,
       },
     });
-
     return res.json({
       status: "Success",
       messege: "Your measured activity has been deleted",
@@ -367,12 +302,10 @@ const deleteMa = async (req, res) => {
 const deleteMultiMA = async (req, res) => {
   try {
     const { multiId } = req.body;
-
     let count = 0;
-
     await Promise.all(
       multiId.map(async (data) => {
-        const deleteData = await GoalModel.destroy({
+        const deleteData = await MAModel.destroy({
           where: {
             maId: data,
           },
@@ -385,7 +318,7 @@ const deleteMultiMA = async (req, res) => {
 
     return res.json({
       status: "Success",
-      messege: `${count} Goals has been deleted`,
+      messege: `${count} measure activity has been deleted`,
     });
   } catch (error) {
     console.log(error);
@@ -399,30 +332,47 @@ const deleteMultiMA = async (req, res) => {
 // UPDATE MULTI GOALS
 const updateMultiMA = async (req, res) => {
   try {
-    const { status, goalId } = req.body;
-    // const status = payload.status;
-    // return res.send(payload)
+    const { status, maId, isArchive } = req.body;
     let count = 0;
-
     await Promise.all(
-      goalId.map(async (data) => {
-        const updateData = await GoalModel.update(
-          { status: status, rate: status === "ongoing" ? 60 : 100 },
-          {
-            where: {
-              goalId: data,
+      maId.map(async (data) => {
+        if (status === null) {
+          const updateData = await MAModel.update(
+            {
+              isArchive: isArchive,
             },
+            {
+              where: {
+                maId: data,
+              },
+            }
+          );
+          if (updateData) {
+            count = count + 1;
           }
-        );
-        if (updateData) {
-          count = count + 1;
+        } else {
+          const updateData = await MAModel.update(
+            {
+              status: status,
+              rate: status === "ongoing" ? 60 : 100,
+              isArchive: isArchive,
+            },
+            {
+              where: {
+                maId: data,
+              },
+            }
+          );
+          if (updateData) {
+            count = count + 1;
+          }
         }
       })
     );
 
     return res.json({
       status: "Success",
-      messege: `${count} Goals has been updated`,
+      messege: `${count} Measure activity has been updated`,
     });
   } catch (error) {
     console.log(error);

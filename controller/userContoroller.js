@@ -16,12 +16,10 @@ const registerUser = async (req, res) => {
     let body = req.body;
 
     body.password = await bcrypt.hashSync(body.password, 10);
-
     const users = await UserModel.create({
       username: body.username,
       password: body.password,
     });
-
     res.status(201).json({
       status: "Success",
       messege: "Succesfully register new account",
@@ -40,27 +38,22 @@ const registerUserBiodata = async (req, res) => {
   try {
     let body = req.body;
     let { idUser } = req.params;
-
-    // const result = await cloudinary.uploader.upload(body.image, {
-    //   folder: "/profile",
-    // });
-    // return res.send(req.files.image);
     if (req.file?.path === undefined)
-      // jika file tidak ada maka akan mengirimkan pesan wajib upload file
       return res.status(422).json({
         status: "Failed",
         message: "No image choosen",
-      }); //  jika status 200 maka akan menampilkan pesan error yang terjadi  dan mengirimkan pesan wajib upload file
-    body.image = req.file.path; // jika file ada maka akan mengirimkan foto_barang yang baru
+      });
+    body.image = req.file.path;
+    const myArray = body.image.split("/v");
+    const tes = myArray[0] + "/c_thumb,h_300,w_300/v" + myArray[1];
 
-    // return res.send(req.body);
     const dataUser = await UserModel.update(
       {
         name: body.name,
         role: body.role,
         position: body.position,
         birthday: body.birthday,
-        image: body.image,
+        image: tes,
       },
       {
         where: {
@@ -76,7 +69,7 @@ const registerUserBiodata = async (req, res) => {
       },
       process.env.JWT_TOKEN,
       {
-        expiresIn: "1w",
+        expiresIn: "1m",
       }
     );
     res.status(201).json({
@@ -148,18 +141,7 @@ const loginUser = async (req, res) => {
 /// GET USERS
 const getAllUsers = async (req, res) => {
   try {
-    const dataUser = await UserModel.findAndCountAll({
-      attributes: [
-        "id",
-        "username",
-        "name",
-        "role",
-        "position",
-        "birthday",
-        "image",
-      ],
-     });
-
+    const dataUser = await UserModel.findAndCountAll();
     return res.json({
       status: "Success",
       messege: "Succesfully fetching all users data",
@@ -176,18 +158,7 @@ const getAllUsers = async (req, res) => {
 const getUserById = async (req, res) => {
   try {
     const { id } = req.params;
-    const userData = await UserModel.findByPk(id, {
-      attributes: [
-        "id",
-        "username",
-        "name",
-        "role",
-        "position",
-        "birthday",
-        "image",
-      ],
-    });
-
+    const userData = await UserModel.findByPk(id);
     return res.json({
       status: "Success",
       messege: "Succesfully fetching  user data",
