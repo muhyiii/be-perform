@@ -29,6 +29,7 @@ const {
   registerUserBiodata,
 
   usersStaticAll,
+  deleteUser,
 } = require("../controller/userContoroller");
 const { upload } = require("../middleware/uploadCloudinary");
 const validationMiddleware = require("../middleware/ValidationMiddleware");
@@ -64,6 +65,8 @@ router.get("/data/users", getAllUsers);
 router.get("/data/users/staticAll", usersStaticAll);
 // GET ONE DATA USER
 router.get("/data/users/:id", getUserById);
+// DELETE USER
+router.get('/data/users/:id/delete',deleteUser)
 
 // GOALS
 //// ADD GOAL

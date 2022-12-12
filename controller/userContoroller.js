@@ -211,7 +211,22 @@ const usersStaticAll = async (req, res) => {
     });
   }
 };
-
+const deleteUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userData = await UserModel.delete(id);
+    return res.json({
+      status: "Success",
+      messege: "Succesfully deleting  user data",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(403).json({
+      status: "Failed",
+      messege: `Something is error at ${error}`,
+    });
+  }
+};
 module.exports = {
   registerUser,
   getAllUsers,
@@ -219,4 +234,5 @@ module.exports = {
   getUserById,
   registerUserBiodata,
   usersStaticAll,
+  deleteUser
 };
