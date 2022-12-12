@@ -30,7 +30,7 @@ const {
 
   usersStaticAll,
   deleteUser,
-} = require("../controller/userContoroller");
+} = require("../controller/userController");
 const { upload } = require("../middleware/uploadCloudinary");
 const validationMiddleware = require("../middleware/ValidationMiddleware");
 const { userValidator } = require("../validator/RegisterValidator");
