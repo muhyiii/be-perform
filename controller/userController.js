@@ -214,10 +214,17 @@ const usersStaticAll = async (req, res) => {
 const deleteUser = async (req, res) => {
   try {
     const { id } = req.params;
-    const userData = await UserModel.delete(id);
-    return res.json({
-      status: "Success",
-      messege: "Succesfully deleting  user data",
+    const dataUser = await UserModel.findByPk(id);
+    if (dataUser === 0) {
+      return res.json({
+        status: "Failed",
+        messege: "Data is undefined",
+      });
+    }
+    await UserModel.destroy({
+      where: {
+        id: id,
+      },
     });
   } catch (error) {
     console.log(error);
@@ -234,5 +241,5 @@ module.exports = {
   getUserById,
   registerUserBiodata,
   usersStaticAll,
-  deleteUser
+  deleteUser,
 };
