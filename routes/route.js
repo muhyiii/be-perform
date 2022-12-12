@@ -66,7 +66,7 @@ router.get("/data/users/staticAll", usersStaticAll);
 // GET ONE DATA USER
 router.get("/data/users/:id", getUserById);
 // DELETE USER
-router.get('/data/users/:id/delete',deleteUser)
+router.delete('/data/users/:id/delete',deleteUser)
 
 // GOALS
 //// ADD GOAL
