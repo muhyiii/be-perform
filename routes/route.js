@@ -8,6 +8,7 @@ const {
   deleteGoal,
   updateMultiGoals,
   getGoalsByUserNow,
+  addImageGoal,
 } = require("../controller/goalsController");
 const {
   getAllMA,
@@ -66,7 +67,7 @@ router.get("/data/users/staticAll", usersStaticAll);
 // GET ONE DATA USER
 router.get("/data/users/:id", getUserById);
 // DELETE USER
-router.delete('/data/users/:id/delete',deleteUser)
+router.delete("/data/users/:id/delete", deleteUser);
 
 // GOALS
 //// ADD GOAL
@@ -77,8 +78,18 @@ router.get("/data/goals", getAllGoals);
 router.get("/data/goals/user/:id", getGoalsByUserNow);
 // GET GOAL BY ID
 router.get("/data/goals/:goalId", getGoalById);
+// UPDATE IMAGE GOAL
+router.put(
+  "/data/goals/:goalId/update/image",
+  upload.single("image"),
+  addImageGoal
+);
 // UPDATE STATUS BY USER
-router.put("/data/goals/:goalId/update", editStatusByUser);
+router.put(
+  "/data/goals/:goalId/update",
+
+  editStatusByUser
+);
 // DELETE GOAL BY ID
 router.delete("/data/goals/:goalId/delete", deleteGoal);
 // DELETE MULTI GOALS

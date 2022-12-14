@@ -3,6 +3,7 @@ const { v4: uuidv4 } = require("uuid");
 const GoalModel = require("../models").dbGoals;
 const UserModel = require("../models").dbUsers;
 const AllPivot = require("../models").allPivot;
+const StampGoal = require("../models").StampGoal;
 
 /// ADD GOALS
 const addGoal = async (req, res) => {
@@ -202,6 +203,37 @@ const editStatusByUser = async (req, res) => {
     });
   }
 };
+// ADD IMAGE
+const addImageGoal = async (req, res) => {
+  try {
+    const { goalId } = req.params;
+    if (req.file?.path === undefined)
+      return res.status(422).json({
+        status: "Failed",
+        message: "No image choosen",
+      });
+    body.image = req.file.path;
+    const myArray = body.image.split("/v");
+    const tes = myArray[0] + "/c_thumb,h_300,w_300/v" + myArray[1];
+    await GoalModel.update(
+      {
+        image: tes,
+      },
+      { where: { goalId: goalId } }
+    );
+
+    res.status(201).json({
+      status: "Success",
+      messege: "Succesfully adding image of goal",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(403).json({
+      status: "Failed",
+      messege: `Something is error at ${error}`,
+    });
+  }
+};
 // DELETE GOALS BY 1
 const deleteGoal = async (req, res) => {
   try {
@@ -319,6 +351,7 @@ module.exports = {
   getAllGoals,
   getGoalById,
   editStatusByUser,
+  addImageGoal,
   deleteGoal,
   deleteMultiGoals,
   updateMultiGoals,
