@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      stampMa.belongsTo(models.dbGoals, {
+      stampMa.belongsTo(models.dbMa, {
         as: "ma",
         foreignKey: "id",
       });

@@ -20,6 +20,7 @@ const {
   getMAbyId,
   deleteMultiMA,
   updateMultiMA,
+  addImageMa,
 } = require("../controller/maController");
 const { getPeriods, createPeriod } = require("../controller/periodController");
 const {
@@ -85,11 +86,7 @@ router.put(
   addImageGoal
 );
 // UPDATE STATUS BY USER
-router.put(
-  "/data/goals/:goalId/update",
-
-  editStatusByUser
-);
+router.put("/data/goals/:goalId/update", editStatusByUser);
 // DELETE GOAL BY ID
 router.delete("/data/goals/:goalId/delete", deleteGoal);
 // DELETE MULTI GOALS
@@ -112,6 +109,12 @@ router.get("/data/measured-activities/:maId", getMAbyId);
 router.delete("/data/measured-activities/:maId/delete", deleteMa);
 // UPDATE STATUS BY USER
 router.put("/data/measured-activities/:maId/update", editStatusMaByUser);
+// UPDATE IMAGE MEASURE ACTIVITY
+router.put(
+  "/data/measured-activities/:maId/update/image",
+  upload.single("image"),
+  addImageMa  
+);
 // DELETE MULTI MEASURE ACTIVITY
 router.post("/data/measured-activities/multiple/delete", deleteMultiMA);
 // UPDATE MULTI MEASURE ACTIVITY

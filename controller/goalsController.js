@@ -215,7 +215,7 @@ const addImageGoal = async (req, res) => {
       });
     body.image = req.file.path;
     const myArray = body.image.split("/v");
-    const tes = myArray[0] + "/c_thumb,h_300,w_300/v" + myArray[1];
+    const tes = myArray[0] + "/c_thumb,h_400,w_400/v" + myArray[1];
     await GoalModel.update(
       {
         image: tes,
@@ -223,7 +223,7 @@ const addImageGoal = async (req, res) => {
       { where: { goalId: goalId } }
     );
 
-    res.status(201).json({
+    res.json({
       status: "Success",
       messege: "Succesfully adding image of goal",
     });
@@ -319,6 +319,7 @@ const updateMultiGoals = async (req, res) => {
         } else {
           const updateData = await GoalModel.update(
             {
+              status: status,
               rate: status === "ongoing" ? 60 : 100,
               isArchive: isArchive,
             },

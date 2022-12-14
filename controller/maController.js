@@ -269,6 +269,38 @@ const editStatusMaByUser = async (req, res) => {
     });
   }
 };
+// ADD IMAGE MA
+const addImageMa = async (req, res) => {
+  try {
+    let body = req.body;
+    const { maId } = req.params;
+    if (req.file?.path === undefined)
+      return res.status(422).json({
+        status: "Failed",
+        message: "No image choosen",
+      });
+    body.image = req.file.path;
+    const myArray = body.image.split("/v");
+    const tes = myArray[0] + "/c_thumb,h_400,w_400/v" + myArray[1];
+    await MAModel.update(
+      {
+        image: tes,
+      },
+      { where: { maId: maId } }
+    );
+
+    res.json({
+      status: "Success",
+      messege: "Succesfully adding image of measure activity",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(403).json({
+      status: "Failed",
+      messege: `Something is error at ${error}`,
+    });
+  }
+};
 // DELETE GOALS BY 1
 const deleteMa = async (req, res) => {
   try {
@@ -390,6 +422,7 @@ module.exports = {
   getMaByUserNow,
   getMaByGoalId,
   editStatusMaByUser,
+  addImageMa,
   deleteMa,
   deleteMultiMA,
   updateMultiMA,
