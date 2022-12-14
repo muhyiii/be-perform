@@ -24,6 +24,10 @@ module.exports = (sequelize, DataTypes) => {
         as: "user",
         foreignKey: "id",
       });
+      dbGoals.hasOne(models.stampGoal, {
+        as: "stampMa",
+        foreignKey: "idGoal",
+      });
     }
   }
   dbGoals.init(

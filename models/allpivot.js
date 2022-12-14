@@ -17,6 +17,7 @@ module.exports = (sequelize, DataTypes) => {
     idUser: DataTypes.INTEGER,
     idGoal: DataTypes.INTEGER,
     idMa: DataTypes.INTEGER
+    
   }, {
     sequelize,
     modelName: 'allPivot',

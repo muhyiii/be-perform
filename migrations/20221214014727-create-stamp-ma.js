@@ -14,7 +14,7 @@ module.exports = {
         onDelete: "CASCADE",
         onUpdate: "CASCADE",
         references: {
-          model: "dbMa",
+          model: "dbMas",
           key: "id",
           as: "idMa",
         },

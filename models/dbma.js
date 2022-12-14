@@ -28,6 +28,10 @@ module.exports = (sequelize, DataTypes) => {
         as: "goal",
         foreignKey: "id",
       });
+      dbMa.hasOne(models.stampMa, {
+        as: "stampMa",
+        foreignKey: "idMa",
+      });
     }
   }
   dbMa.init(
