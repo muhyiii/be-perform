@@ -17,6 +17,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   stampMa.init(
     {
+      idMa: DataTypes.INTEGER,
       activity: DataTypes.STRING,
       time: DataTypes.DATEONLY,
     },
