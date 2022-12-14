@@ -206,6 +206,7 @@ const editStatusByUser = async (req, res) => {
 // ADD IMAGE
 const addImageGoal = async (req, res) => {
   try {
+    let body = req.body;
     const { goalId } = req.params;
     if (req.file?.path === undefined)
       return res.status(422).json({
