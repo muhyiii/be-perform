@@ -179,8 +179,9 @@ const editStatusByUser = async (req, res) => {
     } else {
       await GoalModel.update(
         {
-          isArchive: isArchive,
+          
           rate: status === "ongoing" ? 60 : 100,
+          status: status,
         },
         {
           where: {
