@@ -4,6 +4,7 @@ const GoalModel = require("../models").dbGoals;
 const MAModel = require("../models").dbMa;
 const UserModel = require("../models").dbUsers;
 const AllPivot = require("../models").allPivot;
+const StampMa = require("../models").stampMa;
 
 /// ADD MA
 const addMA = async (req, res) => {
@@ -63,6 +64,11 @@ const getAllMA = async (req, res) => {
             attributes: [],
           },
         },
+        {
+          model: StampMa,
+          require: true,
+          as: "stampMa",
+        },
       ],
     });
     return res.json({
@@ -103,6 +109,11 @@ const getMAbyId = async (req, res) => {
           through: {
             attributes: [],
           },
+        },
+        {
+          model: StampMa,
+          require: true,
+          as: "stampMa",
         },
       ],
     });
@@ -149,6 +160,11 @@ const getMaByUserNow = async (req, res) => {
           through: {
             attributes: [],
           },
+        },
+        {
+          model: StampMa,
+          require: true,
+          as: "stampMa",
         },
       ],
     });
@@ -198,6 +214,11 @@ const getMaByGoalId = async (req, res) => {
             attributes: [],
           },
         },
+        {
+          model: StampMa,
+          require: true,
+          as: "stampMa",
+        },
       ],
     });
     if (measuredData === null) {
@@ -243,6 +264,11 @@ const editStatusMaByUser = async (req, res) => {
           },
         }
       );
+      await stampMa.create({
+        idMa: maId,
+        activity: isArchive ? "Set ma to archive" : "Undo archive ma",
+        time: Date(),
+      });
     } else {
       await MAModel.update(
         {
@@ -255,6 +281,16 @@ const editStatusMaByUser = async (req, res) => {
           },
         }
       );
+      await StampMa.create({
+        idMa: maId,
+        activity:
+          status === "ongoing"
+            ? "Task is started"
+            : status === "hold"
+            ? "Task is held"
+            : "Task is completed",
+        time: Date(),
+      });
     }
     return res.json({
       status: "Success",
