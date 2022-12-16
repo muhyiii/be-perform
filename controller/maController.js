@@ -64,11 +64,11 @@ const getAllMA = async (req, res) => {
             attributes: [],
           },
         },
-        {
-          model: StampMa,
-          require: true,
-          as: "stampMa",
-        },
+        // {
+        //   model: StampMa,
+        //   require: true,
+        //   as: "stampMa",
+        // },
       ],
     });
     return res.json({
@@ -110,11 +110,11 @@ const getMAbyId = async (req, res) => {
             attributes: [],
           },
         },
-        {
-          model: StampMa,
-          require: true,
-          as: "stampMa",
-        },
+        // {
+        //   model: StampMa,
+        //   require: true,
+        //   as: "stampMa",
+        // },
       ],
     });
     if (measuredData === null) {
@@ -161,11 +161,11 @@ const getMaByUserNow = async (req, res) => {
             attributes: [],
           },
         },
-        {
-          model: StampMa,
-          require: true,
-          as: "stampMa",
-        },
+        // {
+        //   model: StampMa,
+        //   require: true,
+        //   as: "stampMa",
+        // },
       ],
     });
     if (measuredData === null) {
@@ -214,11 +214,11 @@ const getMaByGoalId = async (req, res) => {
             attributes: [],
           },
         },
-        {
-          model: StampMa,
-          require: true,
-          as: "stampMa",
-        },
+        // {
+        //   model: StampMa,
+        //   require: true,
+        //   as: "stampMa",
+        // },
       ],
     });
     if (measuredData === null) {
@@ -281,16 +281,16 @@ const editStatusMaByUser = async (req, res) => {
           },
         }
       );
-      await StampMa.create({
-        idMa: maId,
-        activity:
-          status === "ongoing"
-            ? "Task is started"
-            : status === "hold"
-            ? "Task is held"
-            : "Task is completed",
-        time: Date(),
-      });
+      // await StampMa.create({
+      //   idMa: maId,
+      //   activity:
+      //     status === "ongoing"
+      //       ? "Task is started"
+      //       : status === "hold"
+      //       ? "Task is held"
+      //       : "Task is completed",
+      //   time: Date(),
+      // });
     }
     return res.json({
       status: "Success",
