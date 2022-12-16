@@ -119,9 +119,9 @@ const loginUser = async (req, res) => {
       {
         id: idUser,
         username: dataUser.username,
-        name: body.name,
-        role: body.role,
-        position: body.position,
+        name: dataUser.name,
+        role: dataUser.role,
+        position: dataUser.position,
       },
       process.env.JWT_TOKEN,
       {
