@@ -66,6 +66,8 @@ const registerUserBiodata = async (req, res) => {
         id: idUser,
         username: dataUser.username,
         name: body.name,
+        role: body.role,
+        position: body.position,
       },
       process.env.JWT_TOKEN,
       {
@@ -115,9 +117,11 @@ const loginUser = async (req, res) => {
 
     const token = jwt.sign(
       {
-        id: users.id,
-        username: users.username,
-        nama: users.name,
+        id: idUser,
+        username: dataUser.username,
+        name: body.name,
+        role: body.role,
+        position: body.position,
       },
       process.env.JWT_TOKEN,
       {
