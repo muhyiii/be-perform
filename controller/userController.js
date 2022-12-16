@@ -63,11 +63,11 @@ const registerUserBiodata = async (req, res) => {
     );
     const token = jwt.sign(
       {
-        id: idUser,
+        id: dataUser.id,
         username: dataUser.username,
-        name: body.name,
-        role: body.role,
-        position: body.position,
+        name: dataUser.name,
+        role: dataUser.role,
+        position: dataUser.position,
       },
       process.env.JWT_TOKEN,
       {
@@ -93,21 +93,21 @@ const loginUser = async (req, res) => {
   try {
     const { username, password } = req.body;
     // CEK EMAIL DULU ADAA ATAU NGGAK
-    const users = await UserModel.findOne({
+    const dataUser = await UserModel.findOne({
       where: {
         username: username,
       },
     });
     // CEK EMAIL DAN PASSWORD HARUS SAMA DARI DATABASE
     // CEK EMAILNYA
-    if (users === null) {
+    if (dataUser === null) {
       return res.status(401).json({
         status: "Failed",
         messege: "Your data has not been registered",
       });
     }
     // CEK PASSWORDNYA
-    const verify = bcrypt.compareSync(password, users.password);
+    const verify = bcrypt.compareSync(password, dataUser.password);
     if (!verify) {
       return res.status(401).json({
         status: "Gagal",
@@ -117,7 +117,7 @@ const loginUser = async (req, res) => {
 
     const token = jwt.sign(
       {
-        id: idUser,
+        id: dataUser.id,
         username: dataUser.username,
         name: dataUser.name,
         role: dataUser.role,
