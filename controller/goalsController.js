@@ -43,23 +43,14 @@ const addGoal = async (req, res) => {
 /// GET GOALS
 const getAllGoals = async (req, res) => {
   try {
-    const { limit, offset } = req.query;
-    const goalData = await GoalModel.findAndCountAll({
+    const goalData = await UserModel.findAndCountAll({
       include: [
         {
-          model: UserModel,
+          model: GoalModel,
           require: true,
-          as: "users",
-          attributes: ["name", "role", "image"],
-          // through: {
-          //   attributes: [],
-          // },
+          as: "goals",
         },
       ],
-      offset: offset,
-      limit: limit,
-      // offset: 5,
-      // limit: 5,
     });
 
     return res.json({
@@ -81,17 +72,13 @@ const getAllGoals = async (req, res) => {
 const getGoalsByUserNow = async (req, res) => {
   try {
     const { id } = req.params;
-    const goalData = await GoalModel.findAndCountAll({
-      where: { idUser: id },
+    const goalData = await UserModel.findAndCountAll({
+      where: { id: id },
       include: [
         {
-          model: UserModel,
+          model: GoalModel,
           require: true,
-          as: "users",
-          attributes: ["name", "role", "image"],
-          through: {
-            attributes: [],
-          },
+          as: "goals",
         },
       ],
     });
@@ -179,7 +166,6 @@ const editStatusByUser = async (req, res) => {
     } else {
       await GoalModel.update(
         {
-          
           rate: status === "ongoing" ? 60 : 100,
           status: status,
         },
